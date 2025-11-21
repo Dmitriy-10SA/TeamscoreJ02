@@ -1,6 +1,10 @@
 package passwordvalidator;
 
-/** Проверка пароля на сложность.
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Проверка пароля на сложность.
  * Пароль должен отвечать следующим требованиям:
  * - не менее 8 символов в длину
  * - содержит строчные, заглавные буквы и цифры
@@ -10,27 +14,44 @@ package passwordvalidator;
 public class PasswordValidator {
     /**
      * Проверка валидности пароля
+     *
      * @param password пароль
      * @param userName имя пользователя
      * @return возвращает true, если пароль отвечает всем требованиям
      */
     public static boolean isValidPassword(String password, String userName) {
+        return validatePassword(password, userName).isValid();
+    }
+
+    /**
+     * Валидирование пароля и возврат списка ошибок
+     *
+     * @param password пароль
+     * @param userName имя пользователя
+     * @return {@link ValidationResult}
+     * @see ValidationResult
+     */
+    public static ValidationResult validatePassword(String password, String userName) {
+        List<String> errors = new ArrayList<>();
         if (password.length() < 8) {
-            return false;
-        }
-        if (!hasDigits(password)) {
-            return false;
+            errors.add("Пароль должен содержать не менее 8 символов");
         }
         if (!hasLowercase(password)) {
-            return false;
+            errors.add("Пароль должен содержать хотя бы одну строчную букву");
         }
         if (!hasUppercase(password)) {
-            return false;
+            errors.add("Пароль должен содержать хотя бы одну заглавную букву");
+        }
+        if (!hasDigits(password)) {
+            errors.add("Пароль должен содержать хотя бы одну цифру");
         }
         if (password.equals(userName)) {
-            return false;
+            errors.add("Пароль не должен совпадать с именем пользователя");
         }
-        return !hasSpacesOrQuotes(password);
+        if (hasSpacesOrQuotes(password)) {
+            errors.add("Пароль не должен содержать пробелы, табуляцию и кавычки");
+        }
+        return new ValidationResult(errors.isEmpty(), errors);
     }
 
     private static boolean hasDigits(String text) {
@@ -62,8 +83,7 @@ public class PasswordValidator {
 
     private static boolean hasSpacesOrQuotes(String text) {
         for (char symbol : text.toCharArray()) {
-            if (Character.isSpaceChar(symbol)
-                    || symbol == '\t' || symbol == '"') {
+            if (Character.isSpaceChar(symbol) || symbol == '\t' || symbol == '"') {
                 return true;
             }
         }

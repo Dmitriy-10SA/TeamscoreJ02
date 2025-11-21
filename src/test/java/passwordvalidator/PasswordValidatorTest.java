@@ -5,7 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class PasswordValidatorTest {
     private void testPassword(String password, String username, boolean result) {
@@ -69,5 +71,50 @@ class PasswordValidatorTest {
             {"qwerty 1234", "_&*^\tBg79", "\"34jdfgER", " \t\r\n\"Rg6*"})
     public void hasSpacesQuotesPassword(String password) {
         testPassword(password, "TestUser", false);
+    }
+
+    @Test
+    @DisplayName("ValidationResult содержит все ошибки")
+    void validationResultContainsAllErrors() {
+        String password = "short";
+        ValidationResult result = PasswordValidator.validatePassword(password, password);
+        assertFalse(result.isValid());
+        List<String> expectedErrors = List.of(
+                "Пароль должен содержать не менее 8 символов",
+                "Пароль должен содержать хотя бы одну заглавную букву",
+                "Пароль должен содержать хотя бы одну цифру",
+                "Пароль не должен совпадать с именем пользователя"
+        );
+        List<String> actualErrors = result.errors();
+        assertEquals(expectedErrors.size(), actualErrors.size());
+        assertTrue(actualErrors.containsAll(expectedErrors));
+    }
+
+    @Test
+    @DisplayName("validatePassword возвращает true для валидного пароля")
+    void validatePasswordReturnsTrue() {
+        ValidationResult result = PasswordValidator.validatePassword("Valid123", "User");
+        assertTrue(result.isValid());
+        assertTrue(result.errors().isEmpty());
+    }
+
+    @Test
+    @DisplayName("validatePassword возвращает false при совпадении с именем пользователя")
+    void validatePasswordDetectsSameAsUsername() {
+        String credentials = "User123456";
+        ValidationResult result = PasswordValidator.validatePassword(credentials, credentials);
+        assertFalse(result.isValid());
+        assertEquals(1, result.errors().size());
+        assertTrue(result.errors().contains("Пароль не должен совпадать с именем пользователя"));
+    }
+
+    @Test
+    @DisplayName("validatePassword обнаруживает отсутствие цифр и нижнего регистра")
+    void validatePasswordDetectsMultipleIssues() {
+        ValidationResult result = PasswordValidator.validatePassword("PASSWORD", "anotherUser");
+        assertFalse(result.isValid());
+        assertTrue(result.errors().contains("Пароль должен содержать хотя бы одну строчную букву"));
+        assertTrue(result.errors().contains("Пароль должен содержать хотя бы одну цифру"));
+        assertEquals(2, result.errors().size());
     }
 }
