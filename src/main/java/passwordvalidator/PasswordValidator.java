@@ -4,7 +4,7 @@ package passwordvalidator;
  * Пароль должен отвечать следующим требованиям:
  * - не менее 8 символов в длину
  * - содержит строчные, заглавные буквы и цифры
- * - не должен совпадать с имененем пользователя
+ * - не должен совпадать с именем пользователя
  * - не должен содержать пробельных символов, табуляции и кавычек
  */
 public class PasswordValidator {
@@ -27,13 +27,10 @@ public class PasswordValidator {
         if (!hasUppercase(password)) {
             return false;
         }
-        if (password == userName) {
+        if (password.equals(userName)) {
             return false;
         }
-        if (hasSpacesOrQuotes(password)) {
-            return false;
-        }
-        return true;
+        return !hasSpacesOrQuotes(password);
     }
 
     private static boolean hasDigits(String text) {
