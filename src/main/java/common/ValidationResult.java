@@ -1,4 +1,4 @@
-package passwordvalidator;
+package common;
 
 import java.util.List;
 

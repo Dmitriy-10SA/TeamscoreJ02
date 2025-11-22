@@ -1,5 +1,7 @@
 package passwordvalidator;
 
+import common.ValidationResult;
+
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,5 +1,6 @@
 package passwordvalidator;
 
+import common.ValidationResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -74,7 +75,7 @@ class PasswordValidatorTest {
     }
 
     @Test
-    @DisplayName("ValidationResult содержит все ошибки")
+    @DisplayName("common.ValidationResult содержит все ошибки")
     void validationResultContainsAllErrors() {
         String password = "short";
         ValidationResult result = PasswordValidator.validatePassword(password, password);
