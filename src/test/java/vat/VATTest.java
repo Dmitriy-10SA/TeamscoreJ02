@@ -122,6 +122,24 @@ class VATTest {
     }
 
     @Test
+    @DisplayName("getVATAmountsByPriceWithoutVAT выбрасывает исключение для отрицательной суммы")
+    void getVATAmountsByPriceWithoutVAT_negative() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> VAT.getVATAmountsByPriceWithoutVAT(new BigDecimal("-0.01"))
+        );
+    }
+
+    @Test
+    @DisplayName("getVATAmountsByPriceWithoutVAT выбрасывает исключение для null")
+    void getVATAmountsByPriceWithoutVAT_null() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> VAT.getVATAmountsByPriceWithoutVAT(null)
+        );
+    }
+
+    @Test
     @DisplayName("getVATAmountsByPriceWithVAT выбрасывает исключение для null")
     void getVATAmountsByPriceWithVAT_null() {
         assertThrows(
@@ -218,15 +236,6 @@ class VATTest {
         assertEquals(new BigDecimal("0.00"), amounts.priceWithoutVat());
         assertEquals(new BigDecimal("0.00"), amounts.vatInReceipt());
         assertEquals(new BigInteger("0"), amounts.vatForDeclaration());
-    }
-
-    @Test
-    @DisplayName("getVATAmountsByPriceWithoutVAT выбрасывает исключение для отрицательной суммы")
-    void getVATAmountsByPriceWithoutVAT_negative() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> VAT.getVATAmountsByPriceWithoutVAT(new BigDecimal("-1"))
-        );
     }
 
     @Test
