@@ -234,8 +234,6 @@ class WeekValidatorAndFormatterTest {
     @Test
     @DisplayName("formatWeekRange для года с 53 неделями (2020)")
     void formatWeekRangeForYearWith53Weeks() {
-        int maxWeeks = LocalDate.of(2020, 12, 28)
-                .get(WeekFields.ISO.weekOfWeekBasedYear());
         String result = WeekValidatorAndFormatter.formatWeekRange(2020, 53);
         assertNotNull(result);
         String[] dates = result.split(" – ");
